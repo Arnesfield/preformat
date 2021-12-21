@@ -2,7 +2,8 @@
   "name": "@arnesfield/preformat",
   "version": "0.0.1",
   "description": "Log with custom formatting.",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "start": "npm run build -- -w",
     "build": "tsc",
