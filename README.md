@@ -117,3 +117,31 @@ logger.handle(undefined);
 logger.log('Hello %s!', 'World');
 // output: Hello World!
 ```
+
+### The `force` object
+
+The `force` object can be accessed via `logger.force` and `logger.format.force`. It contains the format methods that will apply the format even if `params` is empty. By default, the format methods will print out an empty line if there are no `params` similar to `console.log()`, but using `force` will always include the formatting.
+
+```js
+const logger = preformat({ success: '<DONE>' });
+logger.success();
+logger.force.success();
+logger.success('Hello %s!', 'World');
+logger.force.success('Hello %s!', 'World');
+// output: // empty line
+// output: <DONE>
+// output: <DONE> Hello World!
+// output: <DONE> Hello World!
+```
+
+The `logger.format.force` will also apply the formatting without `params`. Its methods will return the formatted result.
+
+```js
+const logger = preformat({ success: '<DONE>' });
+const value1 = logger.format.success();
+const value2 = logger.format.force.success();
+console.log(value1);
+console.log(value2);
+// output: []
+// output: ['<DONE>']
+```
