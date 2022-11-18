@@ -1,43 +1,57 @@
 # preformat
 
+[![npm](https://img.shields.io/npm/v/@arnesfield/preformat.svg)](https://www.npmjs.com/package/@arnesfield/preformat)
+[![Node.js CI](https://github.com/Arnesfield/@arnesfield/preformat/workflows/Node.js%20CI/badge.svg)](https://github.com/Arnesfield/@arnesfield/preformat/actions?query=workflow%3A"Node.js+CI")
+
 Log with custom formatting.
 
-```js
-const logger = preformat();
+```javascript
+const logger = preformat({ success: '[SUCCESS]' });
 logger.log('Hello %s!', 'World');
-// output: Hello World!
+logger.success('Hello %s!', 'World');
+```
+
+```text
+Hello World!
+[SUCCESS] Hello World!
 ```
 
 The `Preformat` object contains the following format methods by default: `default`, `log`, `info`, `error`, `warn`, `debug`.
 
-## Examples
+## Usage
 
 1. Basic formatting:
 
-   ```js
+   ```javascript
    const logger = preformat('Prefix:');
    logger.log('Hello %s!', 'World');
-   // output: Prefix: Hello World!
+   ```
+
+   ```text
+   Prefix: Hello World!
    ```
 
 2. Formatting with function:
 
-   ```js
+   ```javascript
    const logger = preformat(() => {
      const year = new Date().getFullYear();
      return `[${year}]`;
    });
    logger.log('Hello %s!', 'World');
-   // output: [2021] Hello World!
+   ```
+
+   ```text
+   [2021] Hello World!
    ```
 
 3. Multiple formatting:
 
-   ```js
+   ```javascript
    const logger = preformat({
      default: '[DEFAULT]',
      log: '[LOG]',
-     info: '[ERR]',
+     info: '[INFO]',
      error: () => '[ERR]',
      warn: '[WARN]',
      debug: () => {
@@ -49,51 +63,67 @@ The `Preformat` object contains the following format methods by default: `defaul
      .log('Hello %s!', 'World')
      .error('Hello %s!', 'World')
      .debug('Hello %s!', 'World');
-   // output: [LOG] Hello World!
-   // output: [ERR] Hello World!
-   // output: [DEBUG-2021] Hello World!
+   ```
+
+   ```text
+   [LOG] Hello World!
+   [ERR] Hello World!
+   [DEBUG-2021] Hello World!
    ```
 
 4. Custom formatting:
 
-   ```js
+   ```javascript
    const logger = preformat({ success: '<DONE>' });
    logger.success('Hello %s!', 'World');
-   // output: <DONE> Hello World!
+   ```
+
+   ```text
+   <DONE> Hello World!
    ```
 
 5. Formatting with substitution:
 
-   ```js
+   ```javascript
    const logger = preformat({
-     default: 'Number: %s yay',
-     error: 'Error: %s oof'
+     default: 'DEFAULT: %s foo',
+     error: 'ERROR: %s bar'
    });
-   logger.log(200).error(400).warn('[%d]', 300);
-   // output: Number: 200 yay
-   // output: Error: 400 oof
-   // output: Number: [300] yay
+   logger.log(200).error(400, 'error').warn('[%d]', 300, 'warn');
+   ```
+
+   ```text
+   DEFAULT: 200 foo
+   ERROR: 400 bar error
+   DEFAULT: [300] foo warn
    ```
 
 ### The `format` object
 
-The `logger.format` object contains the both the default and custom format methods. Each method will return the formatted result. Example:
+The `logger.format` object contains the both the default and custom format methods.
 
-```js
+Each method will return the formatted result. Example:
+
+```javascript
 const logger = preformat({ success: '<DONE>' });
 const output = logger.format.success('Hello %s!', 'World');
 console.log(output);
-// output: ['<DONE> Hello %s!', 'World']
+```
+
+```text
+[ '<DONE> Hello %s!', 'World' ]
 ```
 
 ### The `handle` method
 
-The `logger.handle()` method accepts a callback to handle the format method call. By default, it uses `console` to log the formatted parameters. You can override this functionality. Example:
+The `logger.handle()` method accepts a callback to handle the format method call.
 
-```js
+By default, it uses `console` to log the formatted parameters. You can override this functionality. Example:
+
+```javascript
 const logger = preformat({ success: '<DONE>' });
 
-logger.handle((mode, args) => {
+logger.handle((mode, args, defaultHandler) => {
   // mode is the format method (e.g. log, success, etc.)
   console.log('mode:', mode);
   // args is an object:
@@ -101,47 +131,68 @@ logger.handle((mode, args) => {
   console.log('args.raw:', args.raw);
   // args.params contains the formatted parameters
   console.log('args.params:', args.params);
+  // defaultHandler is the default handle function
+  defaultHandler(mode, args);
 });
 
 logger.success('Hello %s!', 'World');
-// output: mode: success
-// output: args.raw: ['Hello %s!', 'World']
-// output: args.params: ['<DONE> Hello %s!', 'World']
 ```
 
-You can use the default handler again by passing in `undefined` to the handle call:
+```text
+mode: success
+args.raw: [ '<DONE> Hello %s!', 'World' ]
+args.params: [ '<DONE> Hello %s!', 'World' ]
+<DONE> Hello World!
+```
 
-```js
+You can use the default handler again by passing in `null` or `undefined` to the `handle` call:
+
+```javascript
 const logger = preformat();
-logger.handle(undefined);
+logger.handle(null);
 logger.log('Hello %s!', 'World');
-// output: Hello World!
+```
+
+```text
+Hello World!
 ```
 
 ### The `force` object
 
-The `force` object can be accessed via `logger.force` and `logger.format.force`. It contains the format methods that will apply the format even if `params` is empty. By default, the format methods will print out an empty line if there are no `params` similar to `console.log()`, but using `force` will always include the formatting.
+The `force` object can be accessed via `logger.force` and `logger.format.force`. It contains the format methods that will apply the format even if `params` is empty.
 
-```js
+By default, the format methods will print out an empty line if there are no `params` similar to `console.log()`, but using `force` will always include the formatting.
+
+```javascript
 const logger = preformat({ success: '<DONE>' });
 logger.success();
 logger.force.success();
 logger.success('Hello %s!', 'World');
 logger.force.success('Hello %s!', 'World');
-// output: // empty line
-// output: <DONE>
-// output: <DONE> Hello World!
-// output: <DONE> Hello World!
+```
+
+```text
+
+<DONE>
+<DONE> Hello World!
+<DONE> Hello World!
 ```
 
 The `logger.format.force` will also apply the formatting without `params`. Its methods will return the formatted result.
 
-```js
+```javascript
 const logger = preformat({ success: '<DONE>' });
 const value1 = logger.format.success();
 const value2 = logger.format.force.success();
 console.log(value1);
 console.log(value2);
-// output: []
-// output: ['<DONE>']
 ```
+
+```text
+[]
+[ '<DONE>' ]
+```
+
+## License
+
+Licensed under the [MIT License](LICENSE).
