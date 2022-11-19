@@ -1,4 +1,4 @@
-export * from './format';
-export * from './preformat';
+export * from './core';
+export { preformat as default } from './core';
 export * from './types';
-export { default } from './preformat';
+export * from './utils';
