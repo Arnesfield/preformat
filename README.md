@@ -1,7 +1,7 @@
 # preformat
 
-[![npm](https://img.shields.io/npm/v/@arnesfield/preformat.svg)](https://www.npmjs.com/package/@arnesfield/preformat)
-[![Node.js CI](https://github.com/Arnesfield/@arnesfield/preformat/workflows/Node.js%20CI/badge.svg)](https://github.com/Arnesfield/@arnesfield/preformat/actions?query=workflow%3A"Node.js+CI")
+[![npm](https://img.shields.io/npm/v/preformat.svg)](https://www.npmjs.com/package/preformat)
+[![Node.js CI](https://github.com/Arnesfield/preformat/workflows/Node.js%20CI/badge.svg)](https://github.com/Arnesfield/preformat/actions?query=workflow%3A"Node.js+CI")
 
 Log with custom formatting.
 
@@ -17,6 +17,22 @@ Hello World!
 ```
 
 The `Preformat` object contains the following format methods by default: `default`, `log`, `info`, `error`, `warn`, `debug`.
+
+## Installation
+
+```sh
+npm install preformat
+```
+
+Use the module:
+
+```javascript
+// ES6
+import preformat from 'preformat';
+
+// CommonJS
+const { preformat } = require('preformat');
+```
 
 ## Usage
 
