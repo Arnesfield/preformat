@@ -34,8 +34,8 @@ export function applyFormat<T extends string>(
   // format formatValue and first param
   const formatValue: FormatValue =
     force || params.length > 0 ? getFormat(formatMap, mode) : undefined;
-  if (typeof formatValue !== 'undefined') {
-    params.unshift(...format(formatValue, ...params.splice(0, 1)));
-  }
-  return params;
+  // avoid mutating params
+  return typeof formatValue === 'undefined'
+    ? params.slice()
+    : format(formatValue, ...params.slice(0, 1)).concat(params.slice(1));
 }

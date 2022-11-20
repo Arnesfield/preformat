@@ -80,20 +80,14 @@ export function preformat<T extends string = never>(
     Object.defineProperty(logger, mode, {
       enumerable: true,
       value: (...raw: any[]) => {
-        handler(mode, {
-          raw,
-          params: applyFormat(format, mode, Array.from(raw))
-        });
+        handler(mode, { raw, params: applyFormat(format, mode, raw) });
         return logger;
       }
     });
     Object.defineProperty(logger.force, mode, {
       enumerable: true,
       value: (...raw: any[]) => {
-        handler(mode, {
-          raw,
-          params: applyFormat(format, mode, Array.from(raw), true)
-        });
+        handler(mode, { raw, params: applyFormat(format, mode, raw, true) });
         return logger;
       }
     });
