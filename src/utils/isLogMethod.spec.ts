@@ -3,6 +3,10 @@ import { LOG_METHODS } from '../constants';
 import { isLogMethod } from './isLogMethod';
 
 describe('isLogMethod', () => {
+  it('should be a function', () => {
+    expect(isLogMethod).to.be.a('function');
+  });
+
   it('should check if argument is a log method', () => {
     for (const method of LOG_METHODS) {
       expect(isLogMethod(method)).to.be.true;
