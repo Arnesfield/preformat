@@ -16,7 +16,7 @@ Hello World!
 [SUCCESS] Hello World!
 ```
 
-The `Preformat` object contains the following format methods by default: `default`, `log`, `info`, `error`, `warn`, `debug`.
+The `Preformat` object contains the following format methods by default: `default`, `log`, `info`, `error`, `warn`, `debug`, `trace`.
 
 ## Installation
 
