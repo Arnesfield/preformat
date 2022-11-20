@@ -1,8 +1,7 @@
-import { LogFunction } from './logFunction.types';
-import { Methods } from './preformat.types';
+import { LogMethod } from './logMethod.types';
 
-/** Format value types. */
-export type FormatValueType =
+/** Primitive format value type. */
+export type Primitive =
   | number
   | string
   | boolean
@@ -14,20 +13,14 @@ export type FormatValueType =
 
 /** The format value. */
 export type FormatValue =
-  | FormatValueType
-  | FormatValueType[]
-  | (() => FormatValueType | FormatValueType[]);
+  | Primitive
+  | Primitive[]
+  | (() => Primitive | Primitive[]);
 
 /** The format mode. */
-export type Mode<T extends string = never> = 'default' | LogFunction | T;
+export type Mode<T extends string = never> = 'default' | LogMethod | T;
 
 /** The format object. */
-export type Format<T extends string = never> = Partial<
-  Record<Mode<T>, FormatValue>
->;
-
-/** The format object. */
-export type FormatMethods<T extends string = never> = Methods<T> & {
-  /** Force formatting even if `params` is empty. */
-  readonly force: Methods<T>;
+export type Format<T extends string = never> = {
+  [Key in Mode<T>]?: FormatValue;
 };

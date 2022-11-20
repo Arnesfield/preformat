@@ -1,12 +1,12 @@
-import { LOG_FUNCTIONS } from '../constants';
+import { LOG_METHODS } from '../constants';
 import { Format, FormatValue, Mode } from '../types/format.types';
 import { Handler, HandlerArgs } from '../types/handler.types';
 import { Preformat, PreformatProps } from '../types/preformat.types';
-import { isLogFunction } from '../utils/isLogFunction';
+import { isLogMethod } from '../utils/isLogMethod';
 import { applyFormat } from './applyFormat';
 
 function defaultHandler<T extends string>(mode: Mode<T>, args: HandlerArgs) {
-  const key = isLogFunction(mode) ? mode : 'log';
+  const key = isLogMethod(mode) ? mode : 'log';
   console[key](...args.params);
 }
 
@@ -42,7 +42,7 @@ export function preformat<T extends string = never>(
       ? value
       : ({ default: value } as Format<T>);
   const modes: Mode<T>[] = Array.from(
-    new Set(Object.keys(format).concat('default', LOG_FUNCTIONS))
+    new Set(Object.keys(format).concat('default', LOG_METHODS))
   ) as Mode<T>[];
   const logger = {} as Preformat<T>;
 

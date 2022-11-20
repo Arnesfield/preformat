@@ -8,7 +8,7 @@ export interface HandlerArgs {
   raw: any[];
 }
 
-/** The handle function. */
+/** The handler function. */
 export type Handler<T extends string = never> = (
   mode: Mode<T>,
   args: HandlerArgs,

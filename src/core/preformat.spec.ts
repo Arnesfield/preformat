@@ -1,11 +1,11 @@
 import { expect } from 'chai';
 import { spy } from 'sinon';
-import { LOG_FUNCTIONS } from '../constants';
+import { LOG_METHODS } from '../constants';
 import { Handler } from '../types/handler.types';
 import { preformat } from './preformat';
 
-function hasLogFunctions(value: any) {
-  for (const fn of ['default'].concat(LOG_FUNCTIONS)) {
+function expectLogMethods(value: any) {
+  for (const fn of ['default'].concat(LOG_METHODS)) {
     expect(value).to.have.property(fn).which.is.a('function');
   }
 }
@@ -15,25 +15,25 @@ describe('preformat', () => {
     expect(preformat).to.be.a('function');
   });
 
-  it('should return an object with log functions', () => {
+  it('should return an object with log methods', () => {
     const logger = preformat();
     expect(logger).to.be.an('object');
-    hasLogFunctions(logger);
+    expectLogMethods(logger);
   });
 
   describe('force', () => {
-    it('should be an object with log functions', () => {
+    it('should be an object with log methods', () => {
       const logger = preformat();
       expect(logger).to.have.property('force').which.is.an('object');
-      hasLogFunctions(logger.force);
+      expectLogMethods(logger.force);
     });
   });
 
   describe('format', () => {
-    it('should be an object with log functions', () => {
+    it('should be an object with log methods', () => {
       const logger = preformat();
       expect(logger).to.have.property('format').which.is.an('object');
-      hasLogFunctions(logger.format);
+      expectLogMethods(logger.format);
     });
   });
 

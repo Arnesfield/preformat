@@ -1,25 +1,31 @@
-import { FormatMethods, Mode } from './format.types';
+import { Mode } from './format.types';
 import { Handler } from './handler.types';
 
-/** The format methods for Preformat. */
-export type Methods<
-  T extends string = never,
-  F extends any[] | (() => any) = any[]
-> = Omit<
-  {
-    [key in Mode<T>]: (
-      ...params: any[]
-    ) => F extends () => any ? ReturnType<F> : F;
-  },
+/** The Preformat method identifiers. */
+export type PreformatMethod<T extends string = never> = Exclude<
+  Mode<T>,
   keyof PreformatProps<T>
 >;
+
+/** The format methods. */
+export type FormatMethods<T extends string = never> = {
+  [Key in PreformatMethod<T>]: (...params: any[]) => any[];
+};
+
+/** The Preformat methods. */
+export type PreformatMethods<T extends string = never> = {
+  [Key in PreformatMethod<T>]: (...params: any[]) => Preformat<T>;
+};
 
 /** Additional Preformat object properties and methods. */
 export interface PreformatProps<T extends string = never> {
   /** Force formatting even if `params` is empty. */
-  readonly force: Methods<T, () => Preformat<T>>;
+  readonly force: PreformatMethods<T>;
   /** The format object. */
-  readonly format: FormatMethods<T>;
+  readonly format: FormatMethods<T> & {
+    /** Force formatting even if `params` is empty. */
+    readonly force: FormatMethods<T>;
+  };
   /**
    * Set the handler function when a Preformat method is called.
    *
@@ -32,4 +38,4 @@ export interface PreformatProps<T extends string = never> {
 
 /** The Preformat object. */
 export type Preformat<T extends string = never> = PreformatProps<T> &
-  Methods<T, () => Preformat<T>>;
+  PreformatMethods<T>;

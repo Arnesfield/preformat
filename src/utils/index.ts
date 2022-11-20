@@ -1,1 +1,1 @@
-export * from './isLogFunction';
+export * from './isLogMethod';
