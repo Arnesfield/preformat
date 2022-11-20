@@ -9,10 +9,7 @@ import { format } from './format';
  * @param mode The format mode.
  * @returns The format.
  */
-function getFormat<T extends string>(
-  formatMap: Format<T>,
-  mode: Mode<T>
-): FormatValue {
+function getFormat<T extends Format>(formatMap: T, mode: Mode<T>): FormatValue {
   const value: FormatValue = formatMap[mode] ?? formatMap.default;
   return typeof value === 'function' ? value() : value;
 }
@@ -25,8 +22,8 @@ function getFormat<T extends string>(
  * @param force Force formatting even if `params` is empty.
  * @returns The formatted parameters.
  */
-export function applyFormat<T extends string>(
-  formatMap: Format<T>,
+export function applyFormat<T extends Format>(
+  formatMap: T,
   mode: Mode<T>,
   params: any[],
   force = false

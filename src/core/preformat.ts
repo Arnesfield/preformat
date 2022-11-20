@@ -5,7 +5,7 @@ import { Preformat, PreformatProps } from '../types/preformat.types';
 import { isLogMethod } from '../utils/isLogMethod';
 import { applyFormat } from './applyFormat';
 
-function defaultHandler<T extends string>(mode: Mode<T>, args: HandlerArgs) {
+function defaultHandler<T extends Format>(mode: Mode<T>, args: HandlerArgs) {
   const key = isLogMethod(mode) ? mode : 'log';
   console[key](...args.params);
 }
@@ -14,33 +14,29 @@ function defaultHandler<T extends string>(mode: Mode<T>, args: HandlerArgs) {
  * Create the Preformat object.
  * @returns The Preformat object.
  */
-export function preformat<T extends string = never>(): Preformat<T>;
+export function preformat<T extends Format>(): Preformat<T>;
 
 /**
  * Create the Preformat object.
  * @param value The format value.
  * @returns The Preformat object.
  */
-export function preformat<T extends string = never>(
-  value: FormatValue
-): Preformat<T>;
+export function preformat<T extends Format>(value: FormatValue): Preformat<T>;
 
 /**
  * Create the Preformat object.
  * @param options The format options.
  * @returns The Preformat object.
  */
-export function preformat<T extends string = never>(
-  options: Format<T>
-): Preformat<T>;
+export function preformat<T extends Format>(options: T): Preformat<T>;
 
-export function preformat<T extends string = never>(
-  value?: FormatValue | Format<T>
+export function preformat<T extends Format>(
+  value?: FormatValue | T
 ): Preformat<T> {
-  const format: Format<T> =
+  const format: T =
     value !== null && typeof value === 'object' && !Array.isArray(value)
       ? value
-      : ({ default: value } as Format<T>);
+      : ({ default: value } as T);
   const modes: Mode<T>[] = Array.from(
     new Set(Object.keys(format).concat('default', LOG_METHODS))
   ) as Mode<T>[];

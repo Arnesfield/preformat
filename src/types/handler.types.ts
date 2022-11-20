@@ -1,4 +1,4 @@
-import { Mode } from './format.types';
+import { Format, Mode } from './format.types';
 
 /** The arguments for the handler function. */
 export interface HandlerArgs {
@@ -9,7 +9,7 @@ export interface HandlerArgs {
 }
 
 /** The handler function. */
-export type Handler<T extends string = never> = (
+export type Handler<T extends Format = Format> = (
   mode: Mode<T>,
   args: HandlerArgs,
   defaultHandler: (mode: Mode<T>, args: HandlerArgs) => void

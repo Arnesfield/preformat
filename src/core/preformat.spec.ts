@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { spy } from 'sinon';
 import { LOG_METHODS } from '../constants';
+import { Format } from '../types/format.types';
 import { Handler } from '../types/handler.types';
 import {
   FormatMethods,
@@ -16,18 +17,20 @@ function expectLogMethods(value: any) {
 }
 
 function expectPreformat(
-  getLogger: <T extends string>(preformat: Preformat<T>) => PreformatMethods<T>
+  getLogger: <T extends Format>(preformat: Preformat<T>) => PreformatMethods<T>
 ) {
   let handler: Handler<any> | undefined;
 
-  const get = <T extends string>(preformat: Preformat<T>) => {
+  const get = <T extends Format>(preformat: Preformat<T>) => {
     preformat.handle((mode, args, defaultHandler) => {
       expect(mode).to.be.a('string');
       expect(args).to.be.an('object');
       expect(args).to.have.property('raw').which.is.an('array');
       expect(args).to.have.property('params').which.is.an('array');
       expect(defaultHandler).to.be.a('function');
-      handler?.(mode, args, defaultHandler);
+      if (typeof handler === 'function') {
+        (handler as Handler<T>)(mode, args, defaultHandler);
+      }
     });
     return getLogger(preformat);
   };
@@ -120,7 +123,7 @@ function expectPreformat(
 }
 
 function expectFormat(
-  get: <T extends string>(preformat: Preformat<T>) => FormatMethods<T>
+  get: <T extends Format>(preformat: Preformat<T>) => FormatMethods<T>
 ) {
   it('should be an object with log methods', () => {
     const logger = preformat();
@@ -169,7 +172,7 @@ describe('preformat', () => {
   expectPreformat(logger => logger);
 
   it('should not format if no params', () => {
-    const logger = preformat({ log: 'Log:' });
+    const logger = preformat<Format>({ log: 'Log:' });
     let handlerSpy = spy<Handler>((mode, args) => {
       expect(mode).to.equal('log');
       expect(args.raw).to.deep.equal([]);
@@ -195,7 +198,7 @@ describe('preformat', () => {
     expectPreformat(logger => logger.force);
 
     it('should format even if no params', () => {
-      const logger = preformat({ log: 'Log:' });
+      const logger = preformat<Format>({ log: 'Log:' });
       let handlerSpy = spy<Handler>((mode, args) => {
         expect(mode).to.equal('log');
         expect(args.raw).to.deep.equal([]);
@@ -242,8 +245,8 @@ describe('preformat', () => {
       expect(logger).to.have.property('handle').which.is.a('function');
     });
     it('should call the callback when set', () => {
-      const logger = preformat({ success: '<DONE>' });
-      const handler: Handler<'success'> = (mode, args, defaultHandler) => {
+      const logger = preformat<Format>({ success: '<DONE>' });
+      const handlerSpy = spy<Handler>((mode, args, defaultHandler) => {
         expect(mode).to.be.a('string').that.equals('success');
         expect(args).to.be.an('object');
         expect(args)
@@ -255,8 +258,7 @@ describe('preformat', () => {
           .which.is.an('array')
           .that.deep.equals(['<DONE> Hello %s!', 'World']);
         expect(defaultHandler).to.be.a('function');
-      };
-      const handlerSpy = spy(handler);
+      });
       logger.handle(handlerSpy);
       expect(handlerSpy.calledOnce).to.be.false;
       logger.success('Hello %s!', 'World');

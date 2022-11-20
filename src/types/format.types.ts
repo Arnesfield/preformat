@@ -17,10 +17,15 @@ export type FormatValue =
   | Primitive[]
   | (() => Primitive | Primitive[]);
 
-/** The format mode. */
-export type Mode<T extends string = never> = 'default' | LogMethod | T;
-
 /** The format object. */
-export type Format<T extends string = never> = {
-  [Key in Mode<T>]?: FormatValue;
+export type Format = {
+  [Key in 'default' | LogMethod]?: FormatValue;
+} & {
+  [Key in string]?: FormatValue;
 };
+
+/** The format mode. */
+export type Mode<T extends Format = Record<never, never>> =
+  | 'default'
+  | LogMethod
+  | keyof T;
