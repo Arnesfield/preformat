@@ -2,6 +2,15 @@
   "name": "preformat",
   "version": "0.0.1",
   "description": "Log with custom formatting.",
+  "keywords": [
+    "preformat",
+    "format",
+    "console",
+    "log",
+    "logger",
+    "logging",
+    "terminal"
+  ],
   "homepage": "https://github.com/Arnesfield/preformat#readme",
   "bugs": {
     "url": "https://github.com/Arnesfield/preformat/issues"
