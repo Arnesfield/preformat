@@ -2,20 +2,21 @@ import { Format } from './format.types';
 import { Handler } from './handler.types';
 import { LogMethod } from './logMethod.types';
 
+/** Common methods. */
+type Methods<T extends Format, R> = {
+  [Key in 'default' | LogMethod]: R;
+} & Omit<{ [Key in keyof T]: R }, keyof PreformatProps<T>>;
+
 /** The format methods. */
-export type FormatMethods<T extends Format = Format> = {
-  [Key in 'default' | LogMethod]: (...params: any[]) => any[];
-} & Omit<
-  { [Key in keyof T]: (...params: any[]) => any[] },
-  keyof PreformatProps<T>
+export type FormatMethods<T extends Format = Format> = Methods<
+  T,
+  (...params: any[]) => any[]
 >;
 
 /** The Preformat methods. */
-export type PreformatMethods<T extends Format = Format> = {
-  [Key in 'default' | LogMethod]: (...params: any[]) => Preformat<T>;
-} & Omit<
-  { [Key in keyof T]: (...params: any[]) => Preformat<T> },
-  keyof PreformatProps<T>
+export type PreformatMethods<T extends Format = Format> = Methods<
+  T,
+  (...params: any[]) => Preformat<T>
 >;
 
 /** Additional Preformat object properties and methods. */
